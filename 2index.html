@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="lt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Damir Samarin - Istorijos pasakojimo menas, turinio kūrimas ir socialinis verslas">
+    <title>Damir Samarin - Istorijos pasakojimo menas</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@300;400;500;600;700&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Pro Display', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #1e3c2f 0%, #2d5a3d 50%, #1a352b 100%);
+            color: #333;
+            overflow-x: hidden;
+            scroll-behavior: smooth;
+        }
+
+        /* macOS Notch */
+        .notch {
+            position: fixed;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 200px;
+            height: 30px;
+            background: #000;
+            border-radius: 0 0 15px 15px;
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .notch::before {
+            content: '';
+            width: 8px;
+            height: 8px;
+            background: #333;
+            border-radius: 50%;
+            margin-right: 10px;
+        }
+
+        .notch::after {
+            content: '';
+            width: 12px;
+            height: 3px;
+            background: #333;
+            border-radius: 2px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 40px 20px 120px;
+        }
+
+        /* macOS Dock */
+        .dock {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 15px 25px;
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .dock-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(46, 125, 50, 0.8);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+            font-weight: 600;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .dock-icon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            border-radius: 12px;
+        }
+
+        .dock-icon:hover {
+            transform: translateY(-10px) scale(1.1);
+            background: rgba(56, 142, 60, 0.9);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .dock-icon.active {
+            background: linear-gradient(135deg, #2e7d32, #388e3c);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Pages */
+        .page {
+            min-height: 100vh;
+            padding: 80px 0 40px;
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .page.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* macOS Window Style */
+        .mac-window {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            overflow: hidden;
+            position: relative;
+        }
+
+        .mac-window::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 40px;
+            background: rgba(248, 249, 250, 0.8);
+            border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .mac-buttons {
+            position: absolute;
+            top: 12px;
+            left: 20px;
+            display: flex;
+            gap: 8px;
+            z-index: 10;
+        }
+
+        .mac-button {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+        }
+
+        .mac-button.red { background: #ff5f57; }
+        .mac-button.yellow { background: #ffbd2e; }
+        .mac-button.green { background: #28ca42; }
+
+        .window-content {
+            padding: 60px 60px 40px;
+        }
+
+        /* Hero Section */
+        .hero {
+            text-align: center;
+            color: white;
+            padding: 100px 0;
+        }
+
+        .hero-image {
+            width: 220px;
+            height: 220px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            margin: 0 auto 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 90px;
+            color: white;
+            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.3);
+            animation: float 6s ease-in-out infinite;
+            position: relative;
+            overflow: hidden;
+            background-size: cover;
+            background-position: center;
+        }
+
+        .hero-image::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255,255,255,0.1), transparent);
+            transform: rotate(-45deg);
+            animation: shine 3s ease-in-out infinite;
+        }
+
+        @keyframes shine {
+            0%, 100% { transform: translateX(-100%) translateY(-100%) rotate(-45deg); }
+            50% { transform: translateX(100%) translateY(100%) rotate(-45deg); }
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        .hero h1 {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff, #e8f5e8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            letter-spacing: -2px;
+        }
+
+        .hero p {
+            font-size: 1.5em;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            font-weight: 400;
+        }
+
+        .cta-button {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 18px 45px;
+            border: none;
+            border-radius: 25px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 15px 35px rgba(46, 125, 50, 0.3);
+            font-family: 'SF Pro Display', sans-serif;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 45px rgba(46, 125, 50, 0.4);
+            background: linear-gradient(135deg, #388e3c, #66bb6a);
+        }
+
+        /* About Section */
+        .about-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 60px;
+            align-items: flex-start;
+        }
+
+        .about-stats {
+            display: grid;
+            gap: 25px;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 35px 25px;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            border-radius: 18px;
+            transform: scale(0.95);
+            transition: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stat-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            border-radius: 18px;
+        }
+
+        .stat-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 20px 40px rgba(46, 125, 50, 0.3);
+        }
+
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .stat-label {
+            font-weight: 500;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+            font-size: 0.9em;
+        }
+
+        .about-text {
+            font-size: 1.2em;
+            line-height: 1.8;
+        }
+
+        .about-text h2 {
+            font-size: 2.8em;
+            margin-bottom: 30px;
+            color: #333;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        .story-highlight {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border-left: 4px solid #2e7d32;
+            font-style: italic;
+        }
+
+        /* Video Button Styles */
+        .video-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 18px 35px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            margin: 20px 0;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            box-shadow: 0 15px 30px rgba(46, 125, 50, 0.3);
+        }
+
+        .video-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 20px 40px rgba(46, 125, 50, 0.4);
+            background: linear-gradient(135deg, #388e3c, #66bb6a);
+        }
+
+        /* Video Links Section */
+        .video-links {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+
+        .video-link-item {
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.1), rgba(76, 175, 80, 0.1));
+            padding: 25px;
+            border-radius: 15px;
+            border: 2px solid #2e7d32;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            text-decoration: none;
+            color: #333;
+        }
+
+        .video-link-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(46, 125, 50, 0.2);
+            background: linear-gradient(135deg, rgba(46, 125, 50, 0.15), rgba(76, 175, 80, 0.15));
+        }
+
+        .video-link-title {
+            font-size: 1.3em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #2e7d32;
+        }
+
+        .video-link-description {
+            font-size: 1em;
+            color: #555;
+            line-height: 1.5;
+        }
+
+        /* Experience Timeline */
+        .experience-timeline {
+            position: relative;
+            padding-left: 50px;
+        }
+
+        .experience-timeline::before {
+            content: '';
+            position: absolute;
+            left: 25px;
+            top: 0;
+            bottom: 0;
+            width: 3px;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            border-radius: 3px;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 50px;
+            padding-left: 50px;
+            opacity: 0;
+            transform: translateX(-30px);
+            animation: slideIn 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+        }
+
+        .timeline-item:nth-child(2) { animation-delay: 0.2s; }
+        .timeline-item:nth-child(3) { animation-delay: 0.4s; }
+        .timeline-item:nth-child(4) { animation-delay: 0.6s; }
+        .timeline-item:nth-child(5) { animation-delay: 0.8s; }
+
+        @keyframes slideIn {
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -38px;
+            top: 15px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            box-shadow: 0 0 0 6px rgba(255, 255, 255, 0.9), 0 3px 10px rgba(46, 125, 50, 0.3);
+        }
+
+        .timeline-year {
+            color: #2e7d32;
+            font-weight: 600;
+            font-size: 1.1em;
+            margin-bottom: 8px;
+        }
+
+        .timeline-title {
+            font-size: 1.5em;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: #333;
+        }
+
+        .timeline-company {
+            color: #4caf50;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+
+        .timeline-description {
+            color: #666;
+            line-height: 1.7;
+        }
+
+        .achievement-badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 600;
+            margin: 5px 5px 5px 0;
+        }
+
+        /* Skills Grid */
+        .skills-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+
+        .skill-category {
+            background: linear-gradient(135deg, #2e7d32, #4caf50);
+            padding: 40px 30px;
+            border-radius: 20px;
+            color: white;
+            transform: translateY(30px);
+            opacity: 0;
+            animation: fadeInUp 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-category::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, transparent 50%, rgba(255,255,255,0.05) 100%);
+            border-radius: 20px;
+        }
+
+        .skill-category:nth-child(2) { animation-delay: 0.2s; }
+        .skill-category:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes fadeInUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .skill-category h3 {
+            margin-bottom: 25px;
+            font-size: 1.4em;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skill-list {
+            list-style: none;
+            position: relative;
+            z-index: 1;
+        }
+
+        .skill-list li {
+            padding: 10px 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 400;
+        }
+
+        .skill-list li:last-child {
+            border-bottom: none;
+        }
+
+        /* Contact Section */
+        .contact-content {
+            text-align: center;
+            color: white;
+            max-width: 700px;
+            margin: 0 auto;
+            padding: 100px 0;
+        }
+
+        .contact-content h2 {
+            font-size: 3.5em;
+            margin-bottom: 30px;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .contact-content p {
+            font-size: 1.4em;
+            margin-bottom: 50px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .contact-links {
+            display: flex;
+            justify-content: center;
+            gap: 25px;
+            flex-wrap: wrap;
+        }
+
+        .contact-link {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 18px 35px;
+            border-radius: 25px;
+            text-decoration: none;
+            transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-weight: 500;
+        }
+
+        .contact-link:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-3px);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Section Titles */
+        .section-title {
+            font-size: 3em;
+            margin-bottom: 50px;
+            color: #333;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: -1px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .about-content {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+
+            .video-links {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .hero h1 {
+                font-size: 3em;
+            }
+
+            .window-content {
+                padding: 60px 30px 40px;
+            }
+
+            .skills-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .dock {
+                padding: 10px 20px;
+                gap: 10px;
+            }
+
+            .dock-icon {
+                width: 40px;
+                height: 40px;
+                font-size: 16px;
+            }
+
+            .notch {
+                width: 150px;
+                height: 25px;
+            }
+        }
+
+        /* Scroll Indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 3px;
+            background: rgba(255, 255, 255, 0.1);
+            z-index: 9998;
+        }
+
+        .scroll-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #2e7d32, #4caf50);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+    </style>
+</head>
+<body>
+    <!-- macOS Notch -->
+    <div class="notch"></div>
+
+    <!-- Scroll Indicator -->
+    <div class="scroll-indicator">
+        <div class="scroll-progress"></div>
+    </div>
+
+    <!-- macOS Dock -->
+    <div class="dock">
+        <div class="dock-icon active" onclick="scrollToSection('hero')" title="Pradžia">🏠</div>
+        <div class="dock-icon" onclick="scrollToSection('about')" title="Apie mane">👤</div>
+        <div class="dock-icon" onclick="scrollToSection('experience')" title="Patirtis">💼</div>
+        <div class="dock-icon" onclick="scrollToSection('skills')" title="Įgūdžiai">⚡</div>
+        <div class="dock-icon" onclick="scrollToSection('contact')" title="Kontaktai">📞</div>
+    </div>
+
+    <div class="container">
+        <!-- Hero Page -->
+        <div class="page visible" id="hero">
+            <div class="hero">
+                <div class="hero-image" style="background-image: url('https://media.licdn.com/dms/image/v2/D4D03AQHES4PcOK26Sg/profile-displayphoto-shrink_800_800/profile-displayphoto-shrink_800_800/0/1718892661239?e=1759968000&v=beta&t=SDq1t1aB76YQ2RN71BqJZfbxmJkewEtjOMbylCUQhUI'); background-size: cover; background-position: center;"></div>
+                <h1>Damir Samarin</h1>
+                <p>Istorijos pasakojimo menas • Turinio kūrėjas • Socialinio verslo įkūrėjas</p>
+                <button class="cta-button" onclick="scrollToSection('about')">Susipažinti su mano istorija</button>
+            </div>
+        </div>
+
+        <!-- About Page -->
+        <div class="page" id="about">
+            <div class="mac-window">
+                <div class="mac-buttons">
+                    <div class="mac-button red"></div>
+                    <div class="mac-button yellow"></div>
+                    <div class="mac-button green"></div>
+                </div>
+                <div class="window-content">
+                    <div class="about-content">
+                        <div class="about-stats">
+                            <div class="stat-item">
+                                <div class="stat-number">522</div>
+                                <div class="stat-label">video redagavimo valandų</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">4M+</div>
+                                <div class="stat-label">peržiūrų viso</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">700+</div>
+                                <div class="stat-label">žmonių | kuriems pasakojau savo istoriją</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">5</div>
+                                <div class="stat-label">skirtingos platformos</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">350</div>
+                                <div class="stat-label">Brailing kopijų parduota 2025 m.</div>
+                            </div>
+                        </div>
+                        <div class="about-text">
+                            <h2>Apie mane</h2>
+                            <p>Aš tikiu, kad istorijos - <strong>labai galingas įrankis,</strong> o gebėjimas jas pasakoti - <strong>tikras menas.</strong> Kaip 19-iolikos metų stalo žaidimo bendrakūrėjas, socialinio verslo įkūrėjas ir turinio kūrėjas - tikiu, kad istorijomis reikia <strong>dalintis,</strong> tad čia pateikiu trumpą video istoriją iš mano gyvenimo.</p>
+                            
+                            <a href="https://youtube.com/shorts/7INBkSLyzZ0" target="_blank" class="video-button">
+                                <strong>Spausti ir žiūrėti video</strong>
+                            </a>
+
+                            <div class="story-highlight">
+                                "Mano <strong>gyvenimas,</strong> kaip ir mūsų visų - pilnas <strong>istorijų:</strong> verslo pradžia šešiolikos metų, dviejų mažeikiečių kelionė nuo mokyklos idėjos iki antros vietos Europoje, stalo žaidimas, kurį žaisti galės visi, <strong>sukūrimas.</strong> Neįdomu, kai istorijos lieka tik mūsų atmintyje. Tikiu, kad <strong>geriausios</strong> istorijos yra vertos širdį veriančių žodžių, melodingos intonacijos ir žmonių minios <strong>dėmėsio.</strong> Tikroms, nesuvaidintoms istorijoms dirbtinis intelektas niekada <strong>neprilygs…"</strong>
+                            </div>
+
+                            <a href="https://youtube.com/shorts/gsBxU2_KIIM" target="_blank" class="video-button">
+                                <strong>Spausti ir žiūrėti video</strong>
+                            </a>
+                            
+                            <p>Istorijas aš pasakoju tiek video formatu, tiek ir nuo įvairių scenų, per televizijas, radijas ir renginius. O video montavimo įgūdis leidžia man pasakoti ne tik manąsias, bet ir kitų žmonių istorijas. Atskleisti jų potecialą, suteikti žiūrovui išgyventi emociją - tai mano aistra.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Experience Page -->
+        <div class="page" id="experience">
+            <div class="mac-window">
+                <div class="mac-buttons">
+                    <div class="mac-button red"></div>
+                    <div class="mac-button yellow"></div>
+                    <div class="mac-button green"></div>
+                </div>
+                <div class="window-content">
+                    <h2 class="section-title">Mano istorija</h2>
+                    <div class="experience-timeline">
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023-Dabar</div>
+                            <div class="timeline-title">Turinio kūrėjas</div>
+                            <div class="timeline-company">5 platformų video istorijų kūrimas</div>
+                            <div class="timeline-description">
+                                Nuo scenarijaus iki finalinio montažo. Kuriu turinį, kuris renka milijonus peržiūrų socialiniuose tinkluose ir sudomina žiūrovus.
+                            </div>
+                            <div class="achievement-badge">4 mil. + peržiūrų viso</div>
+                            <div class="achievement-badge">Ilgo ir trumpo formato</div>
+                            <div class="achievement-badge">5 skirtingos platformos</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023-Dabar</div>
+                            <div class="timeline-title">Video Montuotojas</div>
+                            <div class="timeline-company">Profesionalus Video Montavimas</div>
+                            <div class="timeline-description">
+                                Nuo žalios medžiagos iki video, kurį norisi žiūrėti dar kartą. Darbas su profesionalia programa (DaVinci Resolve). Karpymas, spalvos, vizualiniai, grafiniai ir garso efektai. Emocijų perteikimas. 587+ valandų patirties per 2 metus.
+                            </div>
+                            <div class="achievement-badge">DaVinci Resolve</div>
+                            <div class="achievement-badge">Nuo medžiagos iki rezultato</div>
+                            <div class="achievement-badge">587 val.</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-year">2023-Dabar</div>
+                            <div class="timeline-title">Pranešėjas ir TV programų dalyvis</div>
+                            <div class="timeline-company">Renginiai, medija</div>
+                            <div class="timeline-description">
+                                Pasakojau savo istoriją 700+ žmonių vienoje salėje. Iš viso 30+ renginių: pranešimai, paskaitos, panelinės diskusijos, pravesti renginiai, verslo pristatymai. Kalbėta prieš mokinius, mokytojus, studentus, verslo pasaulio atstovus. Temos: socialinis verslas ir įtrauktis, edukacijos mokytojams, jaunimo lyderystė ir švietimas. Dalyvavimas 10+ LRT, TV3, Delfi ir kitų kanalų tiesioginėse transliacijose ir reportažuose.
+                            </div>
+                            <div class="achievement-badge">700+ Auditorija</div>
+                            <div class="achievement-badge">Televizija</div>
+                            <div class="achievement-badge">Istorijos pasakojimas</div>
+                        </div>
+                        
+                        <div class="timeline-item">
+                            <div class="timeline-year">2022-Dabar</div>
+                            <div class="timeline-title">Įkūrėjas</div>
+                            <div class="timeline-company">Brailing - Žaidimas, kuris suvienija</div>
+                            <div class="timeline-description">
+                                Kartu su kolega įkūrėme į socialinį poveikį orientuotą verslą, sukūrėme stalo žaidimą neregiams ir puikiai matantiems žaisti kartu. Įdėja, prototipų kūrimas su neregių bendruomene, 2 vieta Europoje tarp 50,000+ moksleivių verslų, išankstiniai užsakymai, masinė gamyba, žaidimo vertimas į anglų kalbą. Verslo apdovanojimai: LRT Metų Ateitis nominantai, TV3 Lietuvos Garbė, originaliausias jaunas verslas - Žinių Radijas, socialinis verslas 1 vieta - LRytas, geriausias metų žaidimas Lietuvoje - nominantai, mėgstamiausias lietuvių metų stalo žaidimas, ir kiti apdovanojimai.
+                            </div>
+                            <div class="achievement-badge">Produkto ir pakuotės kūrimas</div>
+                            <div class="achievement-badge">Sėkminga masinė gamyba</div>
+                            <div class="achievement-badge">350 pardavimų per išankstinius užsakymus 2025 m.</div>
+                            <div class="achievement-badge">2 vieta Europoje</div>
+                        </div>
+
+                        <div class="timeline-item">
+                            <div class="timeline-year">2020-Dabar</div>
+                            <div class="timeline-title">Garso operatorius / inžinierius</div>
+                            <div class="timeline-company">Gyvi renginiai ir koncertai</div>
+                            <div class="timeline-description">
+                                4+ metų įgarsinant koncertus ir renginius. Patirtis darbo su aparatūra, garso tvarkymas, darbas su atlikėjais ir muzikinės žinios.
+                            </div>
+                            <div class="achievement-badge">4+ Metai Patirties</div>
+                            <div class="achievement-badge">Renginių Įgarsinimo</div>
+                            <div class="achievement-badge">Garso Mastering</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Skills Page -->
+        <div class="page" id="skills">
+            <div class="mac-window">
+                <div class="mac-buttons">
+                    <div class="mac-button red"></div>
+                    <div class="mac-button yellow"></div>
+                    <div class="mac-button green"></div>
+                </div>
+                <div class="window-content">
+                    <h2 class="section-title">Pagrindiniai įgūdžiai</h2>
+                    <div class="skills-grid">
+                        <div class="skill-category">
+                            <h3>💼 Verslo valdymas</h3>
+                            <ul class="skill-list">
+                                <li>Produkto Kūrimas (Brailing)</li>
+                                <li>Pardavimų ir išankstinių užsakymų strategijos</li>
+                                <li>Idėjos pristatymas investuotojams</li>
+                                <li>Derybos ir darbas su partneriais (Tarptaurinė gamykla, dizainerių komanda)</li>
+                                <li>Klientų apklausos ir rinkos tyrimai</li>
+                                <li>Įpakavimo ir masinės gamybos valdymas</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>🎤 Pasirodymas "prieš kamerą"</h3>
+                            <ul class="skill-list">
+                                <li>Filmavimasis TV laidose</li>
+                                <li>Viešas kalbėjimas</li>
+                                <li>Istorijos pasakojimo menas</li>
+                                <li>Dainavimas TV projektose (LRT)</li>
+                                <li>Verslo ir produkto gyvas pristatymas</li>
+                                <li>Darbas su auditorija</li>
+                                <li>Kūno kalba</li>
+                                <li>Raiškaus skaitymo konkursai</li>
+                                <li>Futbolo ir krepšinio rungtynių pranešėjas</li>
+                            </ul>
+                        </div>
+                        
+                        <div class="skill-category">
+                            <h3>🎬 Turinio kūrimas "už kameros"</h3>
+                            <ul class="skill-list">
+                                <li>Video Redagavimas (DaVinci Resolve)</li>
+                                <li>Patirtis - 500 valandų +</li>
+                                <li>Video Projekto Valdymas (Nuo scenarijaus iki Finalinės versijos)</li>
+                                <li>renginių įgarsinimas (4+ metai)</li>
+                                <li>Garso ir vaizdo tvarkymas, spalvų korekcija</li>
+                                <li>Istorijos ir emocijos perteikimas per video montažą</li>
+                                <li>Nuo medžiagos iki finalinio video</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Contact Page -->
+        <div class="page" id="contact">
+            <div class="contact-content">
+                <h2>Kurkime kartu</h2>
+                <p>Istorijų turime visi ir jos pasaulį pripildo spalvomis. Ieškau galimybių tobulėti ir panaudoti savo patirtį naujose projektose: prieš kamerą, už jos, ar kartu.</p>
+                <div class="contact-links">
+                    <a href="mailto:damirsamarin.77@gmail.com" class="contact-link">📧 El. paštas</a>
+                    <a href="https://www.linkedin.com/in/damir-samarin-433088277/" class="contact-link" target="_blank">💼 LinkedIn</a>
+                    <a href="https://mixed-pansy-893.notion.site/Damir-Samarin-Video-istorijos-268d13e2513e80328b89f10adec6e772?source=copy_link" class="contact-link" target="_blank">🎬 Daugiau mano darbų</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Smooth scroll navigation with all sections on single page
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ 
+                    behavior: 'smooth',
+                    block: 'start' 
+                });
+            }
+        }
+
+        // Update page visibility and dock icons based on scroll
+        const pages = document.querySelectorAll('.page');
+        const dockIcons = document.querySelectorAll('.dock-icon');
+        const scrollProgress = document.querySelector('.scroll-progress');
+
+        let currentPageIndex = 0;
+
+        function updatePageVisibility() {
+            const scrollTop = window.scrollY;
+            const windowHeight = window.innerHeight;
+            
+            pages.forEach((page, index) => {
+                const rect = page.getBoundingClientRect();
+                const threshold = windowHeight * 0.3;
+                
+                if (rect.top < threshold && rect.bottom > threshold) {
+                    page.classList.add('visible');
+                    updateDockActive(index);
+                } else if (rect.top < windowHeight && rect.bottom > 0) {
+                    page.classList.add('visible');
+                }
+            });
+
+            // Update scroll progress
+            const totalHeight = document.body.scrollHeight - windowHeight;
+            const progress = totalHeight > 0 ? (scrollTop / totalHeight) * 100 : 0;
+            scrollProgress.style.width = Math.min(progress, 100) + '%';
+        }
+
+        function updateDockActive(index) {
+            if (currentPageIndex !== index) {
+                dockIcons.forEach((icon, i) => {
+                    icon.classList.toggle('active', i === index);
+                });
+                currentPageIndex = index;
+            }
+        }
+
+        // Dock navigation with click events
+        dockIcons.forEach((icon, index) => {
+            icon.addEventListener('mouseenter', () => {
+                if (!icon.classList.contains('active')) {
+                    icon.style.transform = 'translateY(-5px) scale(1.05)';
+                }
+            });
+
+            icon.addEventListener('mouseleave', () => {
+                if (!icon.classList.contains('active')) {
+                    icon.style.transform = '';
+                }
+            });
+        });
+
+        // Arrow key navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
+                e.preventDefault();
+                if (currentPageIndex < pages.length - 1) {
+                    const nextPage = pages[currentPageIndex + 1];
+                    scrollToSection(nextPage.id);
+                }
+            } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
+                e.preventDefault();
+                if (currentPageIndex > 0) {
+                    const prevPage = pages[currentPageIndex - 1];
+                    scrollToSection(prevPage.id);
+                }
+            }
+        });
+
+        // Scroll event listener with smooth updates
+        let ticking = false;
+        window.addEventListener('scroll', () => {
+            if (!ticking) {
+                requestAnimationFrame(updatePageVisibility);
+                ticking = true;
+                setTimeout(() => { ticking = false; }, 100);
+            }
+        });
+
+        // Initialize visibility on load
+        updatePageVisibility();
+
+        // Intersection Observer for better performance
+        const observerOptions = {
+            root: null,
+            rootMargin: '-20% 0px -20% 0px',
+            threshold: [0, 0.1, 0.5, 0.9, 1]
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        pages.forEach(page => {
+            observer.observe(page);
+        });
+    </script>
+</body>
+</html>
